@@ -1,6 +1,6 @@
 TriangleManager
 ===============
-This is a part of lab2 (2 sem) wich create/show triangles from binary files. 
+This is a part of lab2 (4 sem) wich create/show triangles from binary files. 
 Program works only with console arguments.
 
 Types of arguments
