@@ -1,3 +1,6 @@
+
+TriangleManager
+===============
 Program works only with console arguments.
 
 Types of arguments:
