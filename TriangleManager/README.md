@@ -2,7 +2,7 @@ Program works only with console arguments.
 
 Types of arguments:
 	String   filename
-	int 		number; 
+	int      number; 
 	double   x1;
 	double   y1;
 	double   x2;
@@ -12,20 +12,20 @@ Types of arguments:
 
 Commands:
    
-   // add new Triangle to file
-   1) add <filename> <number>, <x1>, <y1>, <x2>, <y2>, <x3>, <y3>
+   Add new Triangle to file
+      add <filename> <number> <x1> <y1> <x2> <y2> <x3> <y3>
 	
-	   // !!! not ready yet
-	// delete all equal Triangles from file
-	// 2) del <filename> <number>
+   Delete all equal Triangles from file
+      // !!! not ready yet
+      // 2) del <filename> <number>
 	
-	// show all triangles from file
-	3) showall <filename>
+   Show all triangles from file
+      showall <filename>
 	
 	
 RerCodes:
    0 - success
    1 - file not found
    2 - cannot write to file
-	3 - invalid args
+   3 - invalid args
    
