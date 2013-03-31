@@ -72,3 +72,14 @@ public class Triangle extends Polygon {
 	}
 	
 }
+
+class Sqr
+{
+	public int calc(int x)
+	{
+		return x*x;
+	}
+	
+}
+
+
