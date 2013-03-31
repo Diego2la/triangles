@@ -1,31 +1,34 @@
 TriangleManager
 ===============
+This is a part of lab2 (2 sem) wich create/show triangles from binary files. 
 Program works only with console arguments.
 
-Types of arguments:
-	String   filename
-	int      number; 
-	double   x1;
-	double   y1;
-	double   x2;
-	double   y2;
-	double   x3;
-	double   y3;
+Types of arguments
+------------------
++ String   filename
++ int      number 
++ double   x1
++ double   y1
++ double   x2
++ double   y2
++ double   x3
++ double   y3
 
 Commands
---------   
-Add new Triangle to file
-add <filename> <number> <x1> <y1> <x2> <y2> <x3> <y3>
+--------
+- Add new triangle to file
 
-Delete all equal Triangles from file
-// !!! not ready yet
-// 2) del <filename> <number>
+    `add <filename> <number> <x1> <y1> <x2> <y2> <x3> <y3>`
 
-Show all triangles from file
-showall <filename>
+- Delete all equal triangles from file ( not supported now )
+
+    `del <filename> <number>`
+
+- Show all triangles from file
+
+    `showall <filename>`
 	
-	
-RerCodes
+Return codes
 --------
 0. Success
 1. File not found
