@@ -32,7 +32,7 @@ abstract public class Tester {
 		int oks   = 0;
 		int fails = 0;
 		
-		int idx = 0;
+		int idx = 1;
 		Iterator<TestInfo> it = results.iterator();
 		while (it.hasNext())
 		{
