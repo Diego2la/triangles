@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Point;
-import com.example.tyurin.figures.PolygonException;
+import com.example.tyurin.figuresexception.PolygonException;
 
 
 public class PolygonTester extends Tester {
@@ -12,11 +12,28 @@ public class PolygonTester extends Tester {
 	@Override
 	public void fillTests() {		
 
-		addTest( new TestInfo(testConstructor(), "testConstructor") );
-	
+		addTest( new TestInfo(testConstructorWithNullVector(), "testConstructorWithNullVector") );
+		
 	}
 		
-	private TestResult testConstructor() {
+	@Override
+	public String toString() {
+		return "PolygonTester";
+	}
+	
+	private TestResult testConstructorWithNullVector() {
+		
+		Vector<Point> v;
+//		try {
+//			Polygon p = new Polygon(v);
+//		} catch (NullCollectionException e) {
+//			return new TestOk();
+//		} catch (PolygonException e) {
+//			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+//		}	
+	}
+	
+	private TestResult testConstructorWithNullPoint() {
 		
 		Vector<Point> v = new Vector<Point>(0);
 		v.setSize(10);
@@ -27,7 +44,7 @@ public class PolygonTester extends Tester {
 		try {
 			Polygon p = new Polygon(v);
 			double d = p.perimeter();
-			if (d != 10) return new TestFail("wrong perimatr value");
+			if (d != 10) return new TestFail("wrong perimetr value");
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
 		}

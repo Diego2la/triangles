@@ -10,6 +10,14 @@ import java.util.Vector;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import com.example.tyurin.figuresexception.NullCollectionException;
+import com.example.tyurin.figuresexception.NullPointException;
+import com.example.tyurin.figuresexception.OpenFileException;
+import com.example.tyurin.figuresexception.PolygonException;
+import com.example.tyurin.figuresexception.ReadFileException;
+import com.example.tyurin.figuresexception.TriangleNotFoundException;
+import com.example.tyurin.figuresexception.VerticesCountException;
+
 
 class TriangleLoader {
 	

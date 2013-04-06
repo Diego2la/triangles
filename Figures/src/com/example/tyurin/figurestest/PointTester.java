@@ -10,6 +10,11 @@ public class PointTester extends Tester {
 		addTest( new TestInfo(testConstructor(), "testConstructor") );
 	
 	}
+	
+	@Override
+	public String toString() {
+		return "PointTester";
+	}
 		
 	private TestResult testConstructor() {
 		Point p = new Point();

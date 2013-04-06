@@ -4,6 +4,10 @@ import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.example.tyurin.figuresexception.NullCollectionException;
+import com.example.tyurin.figuresexception.NullPointException;
+import com.example.tyurin.figuresexception.VerticesCountException;
+
 /**
  * Class implements simple operations with polygons
  */

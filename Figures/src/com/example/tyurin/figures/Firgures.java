@@ -1,7 +1,5 @@
 package com.example.tyurin.figures;
 
-import java.util.Vector;
-
 import com.example.tyurin.figurestest.PointTester;
 
 public class Firgures {
@@ -10,7 +8,8 @@ public class Firgures {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
+		/*
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(4);
 		v.set(0, new Point(0, 0));
@@ -34,6 +33,7 @@ public class Firgures {
 		} catch (PolygonException e) {
 			e.printStackTrace();
 		}
+		*/
 		
 		PointTester pointTester = new PointTester();
 		pointTester.test(true);

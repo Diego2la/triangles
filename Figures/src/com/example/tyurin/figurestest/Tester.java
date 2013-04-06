@@ -27,7 +27,7 @@ abstract public class Tester {
 
 	private void showLog() {
 		
-		System.out.println("Testing \"" + toString() + "\"started");
+		System.out.println("\"" + toString() + "\"started");
 
 		int oks   = 0;
 		int fails = 0;
@@ -51,7 +51,7 @@ abstract public class Tester {
 			System.out.println();
 		}
 		
-		System.out.println("Testing \"" + toString() + "\"finished");
+		System.out.println("\"" + toString() + "\"finished");
 		System.out.println("Result : successes=" + oks + "; fails=" + fails);
 	}
 	
