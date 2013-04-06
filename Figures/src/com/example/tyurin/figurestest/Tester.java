@@ -12,7 +12,7 @@ abstract public class Tester {
 	
 	public boolean test(boolean showLog) {
 
-		fillTests();
+		runTests();
 		if (showLog) this.showLog();
 		return noErrors();		
 	}
@@ -22,7 +22,7 @@ abstract public class Tester {
 		results.add(info);
 	}
 	
-	public void fillTests() {}
+	public void runTests() {}
 	
 
 	private void showLog() {

@@ -5,7 +5,7 @@ import com.example.tyurin.figures.Point;
 public class PointTester extends Tester {
 
 	@Override
-	public void fillTests() {		
+	public void runTests() {		
 
 		addTest( new TestInfo(testConstructor(), "testConstructor") );
 	

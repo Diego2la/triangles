@@ -1,6 +1,7 @@
 package com.example.tyurin.figures;
 
 import com.example.tyurin.figurestest.PointTester;
+import com.example.tyurin.figurestest.PolygonTester;
 
 public class Firgures {
 
@@ -38,6 +39,10 @@ public class Firgures {
 		PointTester pointTester = new PointTester();
 		pointTester.test(true);
 		
+		System.out.println();
+		
+		PolygonTester polygonTester = new PolygonTester();
+		polygonTester.test(true);
 		
 	}
 
