@@ -10,34 +10,39 @@ import java.util.Vector;
 public class Polygon {
 	
 	/**
-	 * Collection with size more than 2 and without self-intersections
-	 * allows to use all class methods
-	 * @param vertices of polygon
+	 * @param vertices Collection of Points
+	 * @throws VerticesCountException If collection size less than MIN_POINT_COUNT
+	 * @throws NullPointException If input collection contains null elements
+	 * @throws NullCollectionException If collection is null 
 	 */
-	public Polygon(AbstractCollection<Point> vertices, int number) {
-		this.vertices.setSize(vertices.size());
-		int idx = 0;
-		for (Iterator<Point> it = vertices.iterator(); it.hasNext(); )
-			this.vertices.set( idx++, new Point(it.next()) );
-		this.number = number;
+	public Polygon(AbstractCollection<Point> vertices) 
+			throws VerticesCountException, NullPointException, NullCollectionException {
+
+		if (vertices == null)
+			throw new NullCollectionException();
+			
+		int size = vertices.size();
+		if ( size < MIN_POINT_COUNT )
+			throw new VerticesCountException();		
+
+		initVertices(vertices.iterator(), size);
 	}
 	
 	public Polygon(Polygon polygon) {
-		this.vertices.setSize(polygon.size());
-		int idx = 0;
-		for (Iterator<Point> it = polygon.pointIterator(); it.hasNext(); )
-			this.vertices.set( idx++, new Point(it.next()) );
-		this.number = polygon.number;
+		
+		try {
+			initVertices(polygon.pointIterator(), polygon.size());
+		} catch (NullPointException e) {
+			// cannot receive this exception
+			// inside our class we have only valid data
+			e.printStackTrace();
+		}
 	}
 	
 	/**
-	 * @return perimeter of polygon
+	 * @return perimeter of Polygon
 	 */
-	public double perimeter() throws FewVerticesException {
-	
-		if ( vertices.size() < MIN_POINT_COUNT )
-			throw new FewVerticesException();		
-		
+	public double perimeter() {
 		double p = 0;
 		for (Iterator<Line> it = lineIterator(); it.hasNext(); )
 			p += it.next().distance();
@@ -47,12 +52,10 @@ public class Polygon {
 	/**
 	 * @return whether a polygon is convex or concave
 	 */
-	public boolean isConvex() throws SelfIntersectionException, FewVerticesException {
+	public boolean isConvex() {
 		
-		if ( vertices.size() < MIN_POINT_COUNT )
-			throw new FewVerticesException();
-		if ( selfintersection() == true ) 
-			throw new SelfIntersectionException();
+//		if ( haveSelfIntersection() == true ) 
+//			throw new SelfIntersectionException();
 		
 		int signPlus  = 0,
 			signMinus = 0;
@@ -83,7 +86,7 @@ public class Polygon {
 	}
 	
 	/**
-	 * @return iterator for all points in Polygon
+	 * @return iterator for all Points in Polygon
 	 */
 	public Iterator<Point> pointIterator() {
         Iterator<Point> it = new Iterator<Point>() {
@@ -109,7 +112,7 @@ public class Polygon {
     }
 		
 	/**
-	 * @return iterator for all neighboring lines in Polygon
+	 * @return iterator for copy of all neighboring Lines in Polygon
 	 */
 	public Iterator<Line> lineIterator() {
         Iterator<Line> it = new Iterator<Line>() {
@@ -135,26 +138,22 @@ public class Polygon {
         return it;
     }
 
-	protected boolean selfintersection() {
-		
-		// temp stub
-		/*
-		int size = vertices.size();
-		Point prev, cur = vertices.get(size - 1);
-		for (int i = 0; i < size; ++i)
+	private void initVertices(Iterator<Point> it, int size) throws NullPointException {
+		this.vertices = new Vector<Point>();
+		this.vertices.setSize(size);
+		int idx = 0;
+		while( it.hasNext() )
 		{
-			last = cur;
-			
-			Line line1 = new Line(cur, last);
-			
+			Point tempPoint = it.next();
+			if (tempPoint != null)
+				this.vertices.set( idx++, new Point(tempPoint) );
+			else
+				throw new NullPointException();
 		}
-		*/
-		return false;
 	}
 	
-	protected Vector<Point> vertices;
-	protected int number;
+	private Vector<Point> vertices;
 	
-	protected final int MIN_POINT_COUNT = 3;
+	private final int MIN_POINT_COUNT = 3;
 	
 }
