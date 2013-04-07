@@ -1,30 +1,20 @@
 package com.example.tyurin.figures;
 
-import com.example.tyurin.figurestest.PointTester;
-import com.example.tyurin.figurestest.PolygonTester;
-import com.example.tyurin.figurestest.TriangleTester;
+import com.example.tyurin.figures.tester.PolygonTester;
+import com.example.tyurin.figures.tester.TriangleTester;
 
 public class Firgures {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		
-		test(true);
+		String resStr = test(true) ? "success" : "fail";
+		System.out.println("Tests result : " + resStr);
 		
 	}
 
 	static boolean test(boolean showLog) {
 
 		boolean res = true;
-		
-		if (res)
-		{
-			PointTester pointTester = new PointTester();
-			res = pointTester.test(showLog);
-			if (showLog) System.out.println();
-		}
 		
 		if (res)
 		{
@@ -40,7 +30,6 @@ public class Firgures {
 			if (showLog) System.out.println();
 		}
 		
-		if (showLog) System.out.println("All tests are complete with no errors");
 		
 		return res;
 	}

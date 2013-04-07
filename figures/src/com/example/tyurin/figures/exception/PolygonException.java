@@ -1,4 +1,4 @@
-package com.example.tyurin.figuresexception;
+package com.example.tyurin.figures.exception;
 
 public class PolygonException extends Exception
 {

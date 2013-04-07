@@ -1,4 +1,4 @@
-package com.example.tyurin.figurestest;
+package com.example.tyurin.figures.tester;
 
 class TestInfo {
 	

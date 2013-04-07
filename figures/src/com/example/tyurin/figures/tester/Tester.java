@@ -1,4 +1,4 @@
-package com.example.tyurin.figurestest;
+package com.example.tyurin.figures.tester;
 
 import java.util.Iterator;
 import java.util.Vector;

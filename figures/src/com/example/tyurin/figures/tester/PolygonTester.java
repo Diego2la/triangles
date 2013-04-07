@@ -1,14 +1,14 @@
-package com.example.tyurin.figurestest;
+package com.example.tyurin.figures.tester;
 
 import java.util.Iterator;
 import java.util.Vector;
 
 import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Point;
-import com.example.tyurin.figuresexception.NullCollectionException;
-import com.example.tyurin.figuresexception.NullPointException;
-import com.example.tyurin.figuresexception.PolygonException;
-import com.example.tyurin.figuresexception.VerticesCountException;
+import com.example.tyurin.figures.exception.NullCollectionException;
+import com.example.tyurin.figures.exception.NullPointException;
+import com.example.tyurin.figures.exception.PolygonException;
+import com.example.tyurin.figures.exception.VerticesCountException;
 
 
 public class PolygonTester extends Tester {
@@ -22,8 +22,8 @@ public class PolygonTester extends Tester {
 		addTest( new TestInfo(testConstructorWithThreePoints() , "testConstructorWithThreePoints") );
 		addTest( new TestInfo(testPerimetrWithFourPoints()     , "testPerimetrWithFourPoints")     );
 		addTest( new TestInfo(testPerimetrWithTwoLines()       , "testPerimetrWithTwoLines")       );
-		addTest( new TestInfo(testCovexWithTreePoints()        , "testCovexWithTreePoints")        );
-		addTest( new TestInfo(testCovexWithSomeBadFigure()     , "testCovexWithSomeBadFigure")     );
+		addTest( new TestInfo(testCovexWithThreePoints()       , "testCovexWithThreePoints")       );
+		addTest( new TestInfo(testCovexWithConcaveFigure()     , "testCovexWithConcaveFigure")     );
 		
 	}
 		
@@ -145,7 +145,7 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testCovexWithTreePoints() {
+	protected TestResult testCovexWithThreePoints() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(3);
@@ -163,7 +163,7 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testCovexWithSomeBadFigure() {
+	protected TestResult testCovexWithConcaveFigure() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(5);
