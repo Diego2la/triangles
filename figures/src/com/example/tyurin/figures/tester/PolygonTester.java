@@ -5,8 +5,7 @@ import java.util.Vector;
 
 import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Point;
-import com.example.tyurin.figures.exception.NullCollectionException;
-import com.example.tyurin.figures.exception.NullPointException;
+import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
@@ -38,7 +37,7 @@ public class PolygonTester extends Tester {
 		try {
 			Polygon p = new Polygon(v);
 			p.perimeter();
-		} catch (NullCollectionException e) {
+		} catch (NullArgumentException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
@@ -57,7 +56,7 @@ public class PolygonTester extends Tester {
 		try {
 			Polygon p = new Polygon(v);
 			p.perimeter();
-		}catch (NullPointException e) {
+		}catch (NullArgumentException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");

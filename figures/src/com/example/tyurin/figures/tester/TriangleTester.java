@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.example.tyurin.figures.Point;
 import com.example.tyurin.figures.Triangle;
+import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
@@ -39,6 +40,18 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();		
 	}
 	
-	
+	protected TestResult testConstructorWithNullFileName() {
+		
+		try {
+			String fileName = null;
+			Triangle p = new Triangle(fileName, 1);
+			p.perimeter();
+		}catch (NullArgumentException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
 		
 }

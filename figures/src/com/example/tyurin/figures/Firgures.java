@@ -7,7 +7,7 @@ public class Firgures {
 
 	public static void main(String[] args) {
 		
-		String resStr = test(true) ? "success" : "fail";
+		String resStr = test(false) ? "success" : "fail";
 		System.out.println("Tests result : " + resStr);
 		
 	}

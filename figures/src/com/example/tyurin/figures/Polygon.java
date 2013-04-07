@@ -4,8 +4,7 @@ import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.example.tyurin.figures.exception.NullCollectionException;
-import com.example.tyurin.figures.exception.NullPointException;
+import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
 /**
@@ -20,10 +19,10 @@ public class Polygon {
 	 * @throws NullCollectionException If collection is null 
 	 */
 	public Polygon(AbstractCollection<Point> vertices) 
-			throws VerticesCountException, NullPointException, NullCollectionException {
+			throws VerticesCountException, NullArgumentException {
 
 		if (vertices == null)
-			throw new NullCollectionException();
+			throw new NullArgumentException();
 			
 		int size = vertices.size();
 		if ( size < MIN_POINT_COUNT )
@@ -36,7 +35,7 @@ public class Polygon {
 		
 		try {
 			initVertices(polygon.pointIterator(), polygon.size());
-		} catch (NullPointException e) {
+		} catch (NullArgumentException e) {
 			// cannot receive this exception
 			// inside our class we have only valid data
 			e.printStackTrace();
@@ -142,7 +141,7 @@ public class Polygon {
         return it;
     }
 
-	private void initVertices(Iterator<Point> it, int size) throws NullPointException {
+	private void initVertices(Iterator<Point> it, int size) throws NullArgumentException {
 		this.vertices = new Vector<Point>();
 		this.vertices.setSize(size);
 		int idx = 0;
@@ -152,7 +151,7 @@ public class Polygon {
 			if (tempPoint != null)
 				this.vertices.set( idx++, new Point(tempPoint) );
 			else
-				throw new NullPointException();
+				throw new NullArgumentException();
 		}
 	}
 	

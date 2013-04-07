@@ -10,8 +10,7 @@ import java.util.Vector;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.example.tyurin.figures.exception.NullCollectionException;
-import com.example.tyurin.figures.exception.NullPointException;
+import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.OpenFileException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.ReadFileException;
@@ -21,12 +20,14 @@ import com.example.tyurin.figures.exception.VerticesCountException;
 
 class TriangleLoader {
 	
-	public TriangleLoader(String fileName) {
+	public TriangleLoader(String fileName) throws NullArgumentException {
+		if (fileName == null) 
+			throw new NullArgumentException();
 		this.fileName = fileName;
 	}
 	
 	Triangle loadTriangle(int number) 
-			throws OpenFileException, ReadFileException, TriangleNotFoundException{
+			throws NullArgumentException, OpenFileException, ReadFileException, TriangleNotFoundException {
 		
 		Triangle t = null;
 		
@@ -97,7 +98,7 @@ public class Triangle extends Polygon {
 	 * @throws NullPointException If input collection contains null elements
 	 * @throws NullCollectionException If collection is null 
 	 */
-	public Triangle(AbstractCollection<Point> vertices) throws VerticesCountException, NullPointException, NullCollectionException {
+	public Triangle(AbstractCollection<Point> vertices) throws VerticesCountException, NullArgumentException {
 		super(vertices);
 		if (vertices.size() != TRIANGLE_VERTICES_COUNT)
 			throw new VerticesCountException();
@@ -108,7 +109,7 @@ public class Triangle extends Polygon {
 	}
 
 	public Triangle(String fileName, int number) 
-			throws OpenFileException, ReadFileException, TriangleNotFoundException {
+			throws NullArgumentException, OpenFileException, ReadFileException, TriangleNotFoundException {
 		super(new TriangleLoader(fileName).loadTriangle(number));
 	}
 	
