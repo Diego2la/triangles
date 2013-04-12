@@ -116,7 +116,7 @@ public class PolygonTester extends Tester {
 		v.set(3, new Point(3, 0));
 		try {
 			Polygon p = new Polygon(v);
-			if (p.perimeter() - 14 < 0.0000001) 
+			if (Math.abs(p.perimeter() - 14) < 0.0000001) 
 				return new TestOk();
 			
 		} catch (PolygonException e) {
@@ -135,7 +135,7 @@ public class PolygonTester extends Tester {
 		v.set(3, new Point(10, 7));
 		try {
 			Polygon p = new Polygon(v);
-			if (p.perimeter() - 26 < 0.0000001) 
+			if (Math.abs(p.perimeter() - 26) < 0.0000001) 
 				return new TestOk();
 			
 		} catch (PolygonException e) {

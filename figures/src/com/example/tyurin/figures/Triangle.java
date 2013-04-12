@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -22,11 +23,11 @@ class TriangleLoader {
 	
 	public TriangleLoader(String fileName) throws NullArgumentException {
 		if (fileName == null) 
-			throw new NullArgumentException();
+			throw new NullArgumentException("fileName");
 		this.fileName = fileName;
 	}
 	
-	Triangle loadTriangle(int number) 
+	public Triangle loadTriangle(int number) 
 			throws NullArgumentException, OpenFileException, ReadFileException, TriangleNotFoundException {
 		
 		Triangle t = null;
@@ -41,23 +42,22 @@ class TriangleLoader {
 				int size = 8 + 6 * 8; // int + 6 * double				
 				byte[] arr = new byte[size];
 
-			    while (t == null && input.read(arr, 0, size) == size)
+				int readed = 0;
+			    while ((readed = input.read(arr, 0, size)) == size)
 				{
 					ByteBuffer buf = ByteBuffer.allocate(size);  
 				    buf.order(ByteOrder.LITTLE_ENDIAN);  
+				    buf.put(arr);
 				    
-				    buf.put(arr, 0, 4);
-				    int num = buf.getInt(0);
-				    
-				    if (num == number)			
+				    if (buf.getInt(0) == number)			
 					{
 						Vector<Point> vertices = new Vector<Point>();
 						vertices.setSize(Triangle.TRIANGLE_VERTICES_COUNT);
 						for (int i = 0 ; i < Triangle.TRIANGLE_VERTICES_COUNT; ++i)
 						{
 							Point p = new Point();
-						    buf.put(arr, 4 + i * 8, 8);     p.x = buf.getDouble(0);
-						    buf.put(arr, 4 + (i+1) * 8, 8); p.y = buf.getDouble(0);
+						    p.x = buf.getDouble( (i + 1) * 8);
+						    p.y = buf.getDouble( (i + 2) * 8);
 							vertices.set(i, p);
 						}
 						
@@ -67,16 +67,18 @@ class TriangleLoader {
 						} catch (PolygonException e)
 						{
 							// error in logic
-							// if we cannot create this Triangle
 							e.printStackTrace();
 						}
+						break;
 					}
-				}			
-				input.close();
+				}	
+			    
+			    input.close();
+			    if (t == null && readed != -1) throw new ReadFileException(fileName);
 			}
 			else throw new OpenFileException(fileName);
 			
-		} catch (IOException e) {
+		} catch (IOException|BufferOverflowException|IndexOutOfBoundsException e) {
 			throw new ReadFileException(fileName);
 		}
 		
@@ -86,7 +88,7 @@ class TriangleLoader {
 		return t;
 	}
 	
-	protected String fileName;
+	private String fileName;
 	
 }
 
@@ -100,8 +102,9 @@ public class Triangle extends Polygon {
 	 */
 	public Triangle(AbstractCollection<Point> vertices) throws VerticesCountException, NullArgumentException {
 		super(vertices);
-		if (vertices.size() != TRIANGLE_VERTICES_COUNT)
-			throw new VerticesCountException();
+		int size = vertices.size();
+		if (size != TRIANGLE_VERTICES_COUNT)
+			throw new VerticesCountException(size);
 	}
 	
 	public Triangle(Triangle triangle) {

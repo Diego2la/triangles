@@ -7,8 +7,10 @@ public class Firgures {
 
 	public static void main(String[] args) {
 		
-		String resStr = test(false) ? "success" : "fail";
-		System.out.println("Tests result : " + resStr);
+		boolean testRes = test(false);
+		String str = new String(testRes ? "success" : "fail");
+		if (!testRes) test(true);
+		System.out.println("Tests result : " + str);
 		
 	}
 
@@ -19,17 +21,16 @@ public class Firgures {
 		if (res)
 		{
 			PolygonTester polygonTester = new PolygonTester();
-			polygonTester.test(showLog);
+			res = polygonTester.test(showLog);
 			if (showLog) System.out.println();
 		}
 		
 		if (res)
 		{
 			TriangleTester triangleTester = new TriangleTester();
-			triangleTester.test(showLog);
+			res = triangleTester.test(showLog);
 			if (showLog) System.out.println();
 		}
-		
 		
 		return res;
 	}

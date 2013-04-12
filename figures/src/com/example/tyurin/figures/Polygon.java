@@ -22,11 +22,11 @@ public class Polygon {
 			throws VerticesCountException, NullArgumentException {
 
 		if (vertices == null)
-			throw new NullArgumentException();
+			throw new NullArgumentException("vertices");
 			
 		int size = vertices.size();
 		if ( size < MIN_POINT_COUNT )
-			throw new VerticesCountException();		
+			throw new VerticesCountException(size);		
 
 		initVertices(vertices.iterator(), size);
 	}
@@ -151,7 +151,7 @@ public class Polygon {
 			if (tempPoint != null)
 				this.vertices.set( idx++, new Point(tempPoint) );
 			else
-				throw new NullArgumentException();
+				throw new NullArgumentException("Point");
 		}
 	}
 	

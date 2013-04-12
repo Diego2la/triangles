@@ -12,4 +12,9 @@ public class Point {
 		x = p.x;
 		y = p.y;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 }

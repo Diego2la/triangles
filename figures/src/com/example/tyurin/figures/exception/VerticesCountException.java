@@ -1,8 +1,8 @@
 package com.example.tyurin.figures.exception;
 
 public class VerticesCountException extends PolygonException {
-	public VerticesCountException() {
-		super("Wrong vertices count");
+	public VerticesCountException(int count) {
+		super("Invalid vertices count = " + count);
 	}
 	private static final long serialVersionUID = 1L;
 }
