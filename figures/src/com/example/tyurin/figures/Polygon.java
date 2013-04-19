@@ -1,10 +1,12 @@
 package com.example.tyurin.figures;
 
+import java.math.BigDecimal;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
 
 import com.example.tyurin.figures.exception.NullArgumentException;
+import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
 /**
@@ -45,11 +47,21 @@ public class Polygon {
 	/**
 	 * @return perimeter of Polygon
 	 */
-	public double perimeter() {
+	public double perimeter() throws TypeOverflowException {
 		double p = 0;
-		for (Iterator<Line> it = lineIterator(); it.hasNext(); )
-			p += it.next().distance();
-		return p;
+		BigDecimal bd = new BigDecimal(p);
+				
+		for (Iterator<Line> it = lineIterator(); it.hasNext(); ) {
+			double d = it.next().distance();
+			if (d == Double.POSITIVE_INFINITY)
+				throw new TypeOverflowException();
+			BigDecimal dec = new BigDecimal(d);
+			bd = bd.add(dec);
+		}
+
+		if (bd.compareTo(new BigDecimal(Double.MAX_VALUE)) == 1)
+			throw new TypeOverflowException();
+		return bd.doubleValue();
 	}
 	
 	/**

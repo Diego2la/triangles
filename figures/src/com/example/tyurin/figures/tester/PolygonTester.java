@@ -7,6 +7,7 @@ import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Point;
 import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.PolygonException;
+import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
 
@@ -21,6 +22,7 @@ public class PolygonTester extends Tester {
 		addTest( new TestInfo(testConstructorWithThreePoints() , "testConstructorWithThreePoints") );
 		addTest( new TestInfo(testPerimetrWithFourPoints()     , "testPerimetrWithFourPoints")     );
 		addTest( new TestInfo(testPerimetrWithTwoLines()       , "testPerimetrWithTwoLines")       );
+		addTest( new TestInfo(testPerimetrOverflow()           , "testPerimetrOverflow")           );
 		addTest( new TestInfo(testCovexWithThreePoints()       , "testCovexWithThreePoints")       );
 		addTest( new TestInfo(testCovexWithConcaveFigure()     , "testCovexWithConcaveFigure")     );
 		
@@ -116,7 +118,8 @@ public class PolygonTester extends Tester {
 		v.set(3, new Point(3, 0));
 		try {
 			Polygon p = new Polygon(v);
-			if (Math.abs(p.perimeter() - 14) < 0.0000001) 
+			double perim = p.perimeter();
+			if (Math.abs(perim - 14) < 0.0000001) 
 				return new TestOk();
 			
 		} catch (PolygonException e) {
@@ -138,6 +141,25 @@ public class PolygonTester extends Tester {
 			if (Math.abs(p.perimeter() - 26) < 0.0000001) 
 				return new TestOk();
 			
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
+	protected TestResult testPerimetrOverflow() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(3);
+		v.set(0, new Point(Double.MAX_VALUE - 1, 7));
+		v.set(1, new Point(Double.MIN_VALUE + 1, -100));
+		v.set(2, new Point(1, 7));
+		try {
+			Polygon p = new Polygon(v);
+			double per = p.perimeter();			
+			if (per != 123) per += 1; // to exclude warning
+		} catch (TypeOverflowException e) {
+			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
 		}

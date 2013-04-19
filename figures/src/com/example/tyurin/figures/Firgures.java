@@ -7,9 +7,8 @@ public class Firgures {
 
 	public static void main(String[] args) {
 		
-		boolean testRes = test(false);
+		boolean testRes = test(true);
 		String str = new String(testRes ? "success" : "fail");
-		if (!testRes) test(true);
 		System.out.println("Tests result : " + str);
 		
 	}

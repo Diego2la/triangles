@@ -3,13 +3,13 @@ package com.example.tyurin.figures.tester;
 import java.util.Vector;
 
 import com.example.tyurin.figures.Point;
-import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Triangle;
 import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.OpenFileException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.ReadFileException;
 import com.example.tyurin.figures.exception.TriangleNotFoundException;
+import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
 public class TriangleTester extends PolygonTester {
@@ -26,6 +26,7 @@ public class TriangleTester extends PolygonTester {
 		addTest( new TestInfo(testConstructorOkCreateFromFile()  , "testConstructorOkCreateFromFile")  );
 		addTest( new TestInfo(testSquareThreePointInLine()       , "testSquareThreePointInLine")       );
 		addTest( new TestInfo(testSquareThreePointNotInLine()    , "testSquareThreePointNotInLine")    );
+		addTest( new TestInfo(testSquareOverflow()               , "testSquareOverflow")               );
 	}
 		
 	@Override
@@ -171,5 +172,26 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();		
 	}
 
+	protected TestResult testSquareOverflow() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(3);
+		v.set(0, new Point(Double.MAX_VALUE - 1, 0));
+		v.set(1, new Point(0, Double.MAX_VALUE - 1));
+		v.set(2, new Point(4, 0));
+		try {
+			Triangle p = new Triangle(v);
+			int buf = 1;
+			if ( Math.abs(p.square() - 4) < 0.0000001 && buf == 1) 
+				buf = 0;
+			
+		} catch (TypeOverflowException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
 	private final String filePath = new String("C:/Users/HP/Dropbox/Private/Projects/triangles/figures/tests/");
 }

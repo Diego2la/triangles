@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
+import java.math.BigDecimal;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,6 +17,7 @@ import com.example.tyurin.figures.exception.OpenFileException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.ReadFileException;
 import com.example.tyurin.figures.exception.TriangleNotFoundException;
+import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
 
@@ -120,14 +122,30 @@ public class Triangle extends Polygon {
 	 * Method use Heron's formula
 	 * @return square of triangle
 	 */
-	public double square() {
+	public double square() throws TypeOverflowException {
 				
-		double p = perimeter() / 2;
+		double per = perimeter();
+		if (per == Double.POSITIVE_INFINITY)
+			throw new TypeOverflowException();
+		per /= 2;
+		
+		BigDecimal p = new BigDecimal( per );
+
 		Iterator<Line> it = lineIterator();
-		double res = p;
-		for (int i = 0; i < TRIANGLE_VERTICES_COUNT; ++i)
-			res *= (p - it.next().distance());
-		return Math.sqrt(res);
+		for (int i = 0; i < TRIANGLE_VERTICES_COUNT; ++i) {
+			double d = it.next().distance();
+			if (d == Double.POSITIVE_INFINITY)
+				throw new TypeOverflowException();
+			BigDecimal temp = new BigDecimal(per - d);
+
+			p = p.multiply( temp );
+		}
+		
+		if (p.compareTo(new BigDecimal(Double.MAX_VALUE)) == 1)
+			throw new TypeOverflowException();
+	
+		return Math.sqrt(p.doubleValue());
+		
 	}
 	
 	final public static int TRIANGLE_VERTICES_COUNT = 3;
