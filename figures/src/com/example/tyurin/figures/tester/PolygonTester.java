@@ -1,10 +1,11 @@
 package com.example.tyurin.figures.tester;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import com.example.tyurin.figures.Polygon;
 import com.example.tyurin.figures.Point;
+import com.example.tyurin.figures.exception.BadPointException;
+import com.example.tyurin.figures.exception.EqualPointsException;
 import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.TypeOverflowException;
@@ -15,25 +16,26 @@ public class PolygonTester extends Tester {
 
 	@Override
 	public void runTests() {		
-
-		addTest( new TestInfo(testConstructorWithNullVector()  , "testConstructorWithNullVector")  );
-		addTest( new TestInfo(testConstructorWithNullPoint()   , "testConstructorWithNullPoint")   );
-		addTest( new TestInfo(testConstructorWithTwoPoints()   , "testConstructorWithTwoPoints")   );
-		addTest( new TestInfo(testConstructorWithThreePoints() , "testConstructorWithThreePoints") );
-		addTest( new TestInfo(testPerimetrWithFourPoints()     , "testPerimetrWithFourPoints")     );
-		addTest( new TestInfo(testPerimetrWithTwoLines()       , "testPerimetrWithTwoLines")       );
-		addTest( new TestInfo(testPerimetrOverflow()           , "testPerimetrOverflow")           );
-		addTest( new TestInfo(testCovexWithThreePoints()       , "testCovexWithThreePoints")       );
-		addTest( new TestInfo(testCovexWithConcaveFigure()     , "testCovexWithConcaveFigure")     );
-		
+		addTest( new TestInfo(test1(), "test1") );
+		addTest( new TestInfo(test2(), "test2") );
+		addTest( new TestInfo(test3(), "test3") );
+		addTest( new TestInfo(test4(), "test4") );
+		addTest( new TestInfo(test5(), "test5") );
+		addTest( new TestInfo(test6(), "test6") );
+		addTest( new TestInfo(test7(), "test7") );
+		addTest( new TestInfo(test8(), "test8") );
+		addTest( new TestInfo(test9(), "test9") );
+		addTest( new TestInfo(test10(), "test10") );
+		addTest( new TestInfo(test11(), "test11") );
+		addTest( new TestInfo(test12(), "test12") );
 	}
 		
 	@Override
 	public String toString() {
-		return "PolygonTester";
+		return "tester";
 	}
 	
-	protected TestResult testConstructorWithNullVector() {
+	protected TestResult test1() {
 		
 		Vector<Point> v = null;
 		try {
@@ -47,13 +49,13 @@ public class PolygonTester extends Tester {
 		return new TestFail();
 	}
 	
-	protected TestResult testConstructorWithNullPoint() {
+	protected TestResult test2() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(4);
-		v.set(0, new Point(0, 0));
-		v.set(1, new Point(0, 0));
-		v.set(2, new Point(0, 0));
+		v.set(0, new Point(0, 1));
+		v.set(1, new Point(0, 2));
+		v.set(2, new Point(0, 3));
 		v.set(3, null);
 		try {
 			Polygon p = new Polygon(v);
@@ -66,12 +68,12 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testConstructorWithTwoPoints() {
+	protected TestResult test3() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(2);
 		v.set(0, new Point(3, 4));
-		v.set(1, new Point(3, 4));
+		v.set(1, new Point(3, 5));
 		try {
 			Polygon p = new Polygon(v);
 			p.perimeter();
@@ -83,32 +85,61 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testConstructorWithThreePoints() {
+	protected TestResult test4() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(3);
-		v.set(0, new Point(3, 4));
-		v.set(1, new Point(3, 4));
-		v.set(2, new Point(3, 4));
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(1, 1));
+		v.set(2, new Point(Double.POSITIVE_INFINITY, 2));
 		try {
 			Polygon p = new Polygon(v);
-			int count = 0;
-			Iterator<Point> it = p.pointIterator();
-			while (it.hasNext()) {
-				Point cur = it.next();
-				if (cur.x != 3 || cur.y != 4)
-					return new TestFail("Wrong point in Polygon");
-				++count;
-			}
-			if (count != 3) return new TestFail("Cannot find 3 Points");
-			
+			p.perimeter();
+		}catch (BadPointException e) {
+			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
 		}
-		return new TestOk();		
+		return new TestFail();		
 	}
-
-	protected TestResult testPerimetrWithFourPoints() {
+	
+	protected TestResult test5() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(3);
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(1, 1));
+		v.set(2, new Point(2, Double.NaN));
+		try {
+			Polygon p = new Polygon(v);
+			p.perimeter();
+		}catch (BadPointException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
+	protected TestResult test6() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(3);
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(1, 1));
+		v.set(2, new Point(1, 1));
+		try {
+			Polygon p = new Polygon(v);
+			p.perimeter();
+		}catch (EqualPointsException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
+	protected TestResult test7() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(4);
@@ -119,7 +150,7 @@ public class PolygonTester extends Tester {
 		try {
 			Polygon p = new Polygon(v);
 			double perim = p.perimeter();
-			if (Math.abs(perim - 14) < 0.0000001) 
+			if (Math.abs(perim - 14) < CALC_DEVIATION) 
 				return new TestOk();
 			
 		} catch (PolygonException e) {
@@ -128,17 +159,17 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testPerimetrWithTwoLines() {
+	protected TestResult test8() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(4);
 		v.set(0, new Point(1, 7));
 		v.set(1, new Point(1, 3));
-		v.set(2, new Point(1, 7));
+		v.set(2, new Point(10, 3));
 		v.set(3, new Point(10, 7));
 		try {
 			Polygon p = new Polygon(v);
-			if (Math.abs(p.perimeter() - 26) < 0.0000001) 
+			if (Math.abs(p.perimeter() - 26) < CALC_DEVIATION) 
 				return new TestOk();
 			
 		} catch (PolygonException e) {
@@ -147,7 +178,7 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testPerimetrOverflow() {
+	protected TestResult test9() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(3);
@@ -166,13 +197,14 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testCovexWithThreePoints() {
+	protected TestResult test10() {
 		
 		Vector<Point> v = new Vector<Point>();
-		v.setSize(3);
-		v.set(0, new Point(1, 7));
-		v.set(1, new Point(1, 3));
-		v.set(2, new Point(4, 47.99));
+		v.setSize(4);
+		v.set(0, new Point(0, 1));
+		v.set(1, new Point(1, 0));
+		v.set(2, new Point(0, -2));
+		v.set(3, new Point(-3, 0));
 		try {
 			Polygon p = new Polygon(v);
 			if (p.isConvex())
@@ -184,7 +216,7 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testCovexWithConcaveFigure() {
+	protected TestResult test11() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(5);
@@ -204,4 +236,23 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 
+	protected TestResult test12() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(3);
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(Double.MAX_VALUE - 1, 0));
+		v.set(2, new Point(0, Double.MAX_VALUE - 1));
+		try {
+			Polygon p = new Polygon(v);
+			p.isConvex();
+		} catch (TypeOverflowException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
+	protected final double CALC_DEVIATION = 0.000001;
 }

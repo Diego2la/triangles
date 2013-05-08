@@ -2,20 +2,20 @@ package com.example.tyurin.figures;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
-import java.math.BigDecimal;
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import com.example.tyurin.figures.exception.BadPointException;
+import com.example.tyurin.figures.exception.EqualPointsException;
+import com.example.tyurin.figures.exception.FileFormatException;
 import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.OpenFileException;
-import com.example.tyurin.figures.exception.PolygonException;
-import com.example.tyurin.figures.exception.ReadFileException;
 import com.example.tyurin.figures.exception.TriangleNotFoundException;
 import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
@@ -30,58 +30,62 @@ class TriangleLoader {
 	}
 	
 	public Triangle loadTriangle(int number) 
-			throws NullArgumentException, OpenFileException, ReadFileException, TriangleNotFoundException {
+			throws OpenFileException, FileFormatException, 
+			TriangleNotFoundException, EqualPointsException {
 		
 		Triangle t = null;
 		
 		try {
 			
 			File file = new File(fileName);
-			if (file.exists() && file.canRead())
-			{
-				InputStream input = new FileInputStream(file);
-				
-				int size = 8 + 6 * 8; // int + 6 * double				
-				byte[] arr = new byte[size];
-
-				int readed = 0;
-			    while ((readed = input.read(arr, 0, size)) == size)
-				{
-					ByteBuffer buf = ByteBuffer.allocate(size);  
-				    buf.order(ByteOrder.LITTLE_ENDIAN);  
-				    buf.put(arr);
-				    
-				    if (buf.getInt(0) == number)			
-					{
-						Vector<Point> vertices = new Vector<Point>();
-						vertices.setSize(Triangle.TRIANGLE_VERTICES_COUNT);
-						for (int i = 0 ; i < Triangle.TRIANGLE_VERTICES_COUNT; ++i)
-						{
-							Point p = new Point();
-						    p.x = buf.getDouble( (i + 1) * 8);
-						    p.y = buf.getDouble( (i + 2) * 8);
-							vertices.set(i, p);
-						}
-						
-						try
-						{
-							t = new Triangle(vertices);
-						} catch (PolygonException e)
-						{
-							// error in logic
-							e.printStackTrace();
-						}
-						break;
-					}
-				}	
-			    
-			    input.close();
-			    if (t == null && readed != -1) throw new ReadFileException(fileName);
-			}
-			else throw new OpenFileException(fileName);
+			if (!file.exists())
+				throw new OpenFileException(fileName);
 			
-		} catch (IOException|BufferOverflowException|IndexOutOfBoundsException e) {
-			throw new ReadFileException(fileName);
+			InputStream input = null;
+			try {
+				input = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+				throw new OpenFileException(fileName);
+			}
+			
+			int size = 8 + 6 * 8; // int + 6 * double				
+			byte[] arr = new byte[size];
+
+			int readed = 0;
+		    while ((readed = input.read(arr, 0, size)) == size)
+			{
+				ByteBuffer buf = ByteBuffer.allocate(size);  
+			    buf.order(ByteOrder.LITTLE_ENDIAN);  
+			    buf.put(arr);
+			    
+			    if (buf.getInt(0) == number)			
+				{
+					Vector<Point> vertices = new Vector<Point>();
+					vertices.setSize(Triangle.TRIANGLE_VERTICES_COUNT);
+					for (int i = 0 ; i < Triangle.TRIANGLE_VERTICES_COUNT; ++i)
+					{
+						Point p = new Point();
+					    p.x = buf.getDouble( (i*2 + 1) * 8);
+					    p.y = buf.getDouble( (i*2 + 2) * 8);
+						vertices.set(i, p);
+					}
+					
+					try
+					{
+						t = new Triangle(vertices);
+					} catch (BadPointException|NullArgumentException|VerticesCountException e) {
+						// error in logic
+						e.printStackTrace();
+					}
+					break;
+				}
+			}	
+		    
+		    input.close();
+			if (t == null && readed != -1) throw new FileFormatException(fileName);
+					
+		} catch (IOException|IndexOutOfBoundsException e) {
+			throw new FileFormatException(fileName);
 		}
 		
 		if (t == null)
@@ -98,23 +102,20 @@ public class Triangle extends Polygon {
 
 	/**
 	 * @param vertices Collection of Points
-	 * @throws VerticesCountException If collection size not TRIANGLE_VERTICES_COUNT
-	 * @throws NullPointException If input collection contains null elements
-	 * @throws NullCollectionException If collection is null 
+	 * @throws VerticesCountException if collection size not TRIANGLE_VERTICES_COUNT
 	 */
-	public Triangle(AbstractCollection<Point> vertices) throws VerticesCountException, NullArgumentException {
+	public Triangle(AbstractCollection<Point> vertices) 
+			throws NullArgumentException, BadPointException, 
+			EqualPointsException, VerticesCountException {
 		super(vertices);
 		int size = vertices.size();
 		if (size != TRIANGLE_VERTICES_COUNT)
 			throw new VerticesCountException(size);
 	}
 	
-	public Triangle(Triangle triangle) {
-		super(triangle);
-	}
-
 	public Triangle(String fileName, int number) 
-			throws NullArgumentException, OpenFileException, ReadFileException, TriangleNotFoundException {
+			throws NullArgumentException, OpenFileException, 
+			FileFormatException, TriangleNotFoundException, EqualPointsException {
 		super(new TriangleLoader(fileName).loadTriangle(number));
 	}
 	
@@ -124,28 +125,27 @@ public class Triangle extends Polygon {
 	 */
 	public double square() throws TypeOverflowException {
 				
-		double per = perimeter();
-		if (per == Double.POSITIVE_INFINITY)
+		double p = perimeter(); 
+		p /= 2;
+		double s = p;
+
+		try {
+			Iterator<Line> it = lineIterator();
+			while(it.hasNext()) {
+				s *= p - it.next().distance();
+			}
+		} catch (OverflowException e) {
 			throw new TypeOverflowException();
-		per /= 2;
-		
-		BigDecimal p = new BigDecimal( per );
-
-		Iterator<Line> it = lineIterator();
-		for (int i = 0; i < TRIANGLE_VERTICES_COUNT; ++i) {
-			double d = it.next().distance();
-			if (d == Double.POSITIVE_INFINITY)
-				throw new TypeOverflowException();
-			BigDecimal temp = new BigDecimal(per - d);
-
-			p = p.multiply( temp );
 		}
-		
-		if (p.compareTo(new BigDecimal(Double.MAX_VALUE)) == 1)
+		if (Double.isInfinite(s) || Double.isNaN(s))
 			throw new TypeOverflowException();
-	
-		return Math.sqrt(p.doubleValue());
 		
+		return Math.sqrt(s);
+		
+	}
+	
+	protected Triangle(Triangle triangle) {
+		super(triangle);
 	}
 	
 	final public static int TRIANGLE_VERTICES_COUNT = 3;

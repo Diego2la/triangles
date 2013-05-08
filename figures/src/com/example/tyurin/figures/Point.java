@@ -12,6 +12,11 @@ public class Point {
 		x = p.x;
 		y = p.y;
 	}
+
+	boolean isValid() {
+		return !(Double.isInfinite(x) || Double.isNaN(x) ||
+		         Double.isInfinite(y) || Double.isNaN(y) );
+	}
 	
 	@Override
 	public String toString() {

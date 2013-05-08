@@ -1,11 +1,13 @@
 package com.example.tyurin.figures;
 
-import java.math.BigDecimal;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.example.tyurin.figures.exception.BadPointException;
+import com.example.tyurin.figures.exception.EqualPointsException;
 import com.example.tyurin.figures.exception.NullArgumentException;
+import com.example.tyurin.figures.exception.PolygonException;
 import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
 
@@ -21,7 +23,8 @@ public class Polygon {
 	 * @throws NullCollectionException If collection is null 
 	 */
 	public Polygon(AbstractCollection<Point> vertices) 
-			throws VerticesCountException, NullArgumentException {
+			throws NullArgumentException, VerticesCountException, 
+			BadPointException, EqualPointsException {
 
 		if (vertices == null)
 			throw new NullArgumentException("vertices");
@@ -31,13 +34,16 @@ public class Polygon {
 			throw new VerticesCountException(size);		
 
 		initVertices(vertices.iterator(), size);
+		
+		if (!noCopy())
+			throw new EqualPointsException();
 	}
 	
-	public Polygon(Polygon polygon) {
+	protected Polygon(Polygon polygon) {
 		
 		try {
 			initVertices(polygon.pointIterator(), polygon.size());
-		} catch (NullArgumentException e) {
+		} catch (PolygonException e) {
 			// cannot receive this exception
 			// inside our class we have only valid data
 			e.printStackTrace();
@@ -49,28 +55,22 @@ public class Polygon {
 	 */
 	public double perimeter() throws TypeOverflowException {
 		double p = 0;
-		BigDecimal bd = new BigDecimal(p);
-				
-		for (Iterator<Line> it = lineIterator(); it.hasNext(); ) {
-			double d = it.next().distance();
-			if (d == Double.POSITIVE_INFINITY)
-				throw new TypeOverflowException();
-			BigDecimal dec = new BigDecimal(d);
-			bd = bd.add(dec);
+		try {
+			for (Iterator<Line> it = lineIterator(); it.hasNext(); ) {
+				p += it.next().distance();
+				if (Double.isInfinite(p) || Double.isNaN(p)) 
+					throw new TypeOverflowException(); 
+			}
+		} catch(OverflowException e) {
+			throw new TypeOverflowException(); 
 		}
-
-		if (bd.compareTo(new BigDecimal(Double.MAX_VALUE)) == 1)
-			throw new TypeOverflowException();
-		return bd.doubleValue();
+		return p;
 	}
 	
 	/**
 	 * @return whether a polygon is convex or concave
 	 */
-	public boolean isConvex() {
-		
-//		if ( haveSelfIntersection() == true ) 
-//			throw new SelfIntersectionException();
+	public boolean isConvex() throws TypeOverflowException {
 		
 		int signPlus  = 0,
 			signMinus = 0;
@@ -84,6 +84,8 @@ public class Polygon {
 			z -= (vertices.get(j).y - vertices.get(i).y) * (vertices.get(k).x - vertices.get(j).x);
 			if (z < 0) ++signMinus;
 			if (z > 0) ++signPlus;
+			if (Double.isInfinite(z) || Double.isNaN(z))
+				throw new TypeOverflowException();
 			if (signMinus != 0 && signPlus != 0)
 				return false;
 		}
@@ -103,7 +105,7 @@ public class Polygon {
 	/**
 	 * @return iterator for all Points in Polygon
 	 */
-	public Iterator<Point> pointIterator() {
+	protected Iterator<Point> pointIterator() {
         Iterator<Point> it = new Iterator<Point>() {
 
             private int idx = 0;
@@ -129,7 +131,7 @@ public class Polygon {
 	/**
 	 * @return iterator for copy of all neighboring Lines in Polygon
 	 */
-	public Iterator<Line> lineIterator() {
+	protected Iterator<Line> lineIterator() {
         Iterator<Line> it = new Iterator<Line>() {
 
             private int idx = 0;
@@ -153,18 +155,35 @@ public class Polygon {
         return it;
     }
 
-	private void initVertices(Iterator<Point> it, int size) throws NullArgumentException {
+	private void initVertices(Iterator<Point> it, int size) 
+			throws NullArgumentException, BadPointException {
 		this.vertices = new Vector<Point>();
 		this.vertices.setSize(size);
 		int idx = 0;
 		while( it.hasNext() )
 		{
 			Point tempPoint = it.next();
-			if (tempPoint != null)
-				this.vertices.set( idx++, new Point(tempPoint) );
-			else
+			if (tempPoint == null)
 				throw new NullArgumentException("Point");
+			if (!tempPoint.isValid()) 
+				throw new BadPointException();
+			this.vertices.set( idx++, new Point(tempPoint) );
 		}
+	}
+	
+	private boolean noCopy() {
+		Iterator<Point> it = pointIterator();
+		while(it.hasNext()) {
+			Point a = it.next();
+			int count = 0;
+			Iterator<Point> et = pointIterator();
+			while(et.hasNext()) {
+				Point b = et.next();
+				if (a.x == b.x && a.y == b.y) ++count;				
+			}
+			if (count != 1) return false;
+		}
+		return true;
 	}
 	
 	private Vector<Point> vertices;

@@ -4,10 +4,11 @@ import java.util.Vector;
 
 import com.example.tyurin.figures.Point;
 import com.example.tyurin.figures.Triangle;
+import com.example.tyurin.figures.exception.EqualPointsException;
+import com.example.tyurin.figures.exception.FileFormatException;
 import com.example.tyurin.figures.exception.NullArgumentException;
 import com.example.tyurin.figures.exception.OpenFileException;
 import com.example.tyurin.figures.exception.PolygonException;
-import com.example.tyurin.figures.exception.ReadFileException;
 import com.example.tyurin.figures.exception.TriangleNotFoundException;
 import com.example.tyurin.figures.exception.TypeOverflowException;
 import com.example.tyurin.figures.exception.VerticesCountException;
@@ -17,16 +18,16 @@ public class TriangleTester extends PolygonTester {
 	@Override
 	public void runTests() {		
 		super.runTests();
-		addTest( new TestInfo(testConstructorWithFourPoints()    , "testConstructorWithFourPoints")    );
-		addTest( new TestInfo(testConstructorWithNullFileName()  , "testConstructorWithNullFileName")  );
-		addTest( new TestInfo(testConstructorCannotFindFile()    , "testConstructorCannotFindFile")    );
-		addTest( new TestInfo(testConstructorProtectedFile()     , "testConstructorProtectedFile")     );
-		addTest( new TestInfo(testConstructorWrongFormat()       , "testConstructorWrongFormat")       );
-		addTest( new TestInfo(testConstructorTriangleNotFound()  , "testConstructorTriangleNotFound")  );
-		addTest( new TestInfo(testConstructorOkCreateFromFile()  , "testConstructorOkCreateFromFile")  );
-		addTest( new TestInfo(testSquareThreePointInLine()       , "testSquareThreePointInLine")       );
-		addTest( new TestInfo(testSquareThreePointNotInLine()    , "testSquareThreePointNotInLine")    );
-		addTest( new TestInfo(testSquareOverflow()               , "testSquareOverflow")               );
+		addTest( new TestInfo(test13(), "test13") );
+		addTest( new TestInfo(test14(), "test14") );
+		addTest( new TestInfo(test15(), "test15") );
+		addTest( new TestInfo(test16(), "test16") );
+		addTest( new TestInfo(test17(), "test17") );
+		addTest( new TestInfo(test18(), "test18") );
+		addTest( new TestInfo(test19(), "test19") );
+		addTest( new TestInfo(test20(), "test20") );
+		addTest( new TestInfo(test21(), "test21") );
+		addTest( new TestInfo(test22(), "test22") );
 	}
 		
 	@Override
@@ -34,12 +35,14 @@ public class TriangleTester extends PolygonTester {
 		return "TriangleTester";
 	}
 	
-	protected TestResult testConstructorWithFourPoints() {
-			
+	protected TestResult test13() {
+		
 		Vector<Point> v = new Vector<Point>();
-		v.setSize(2);
-		v.set(0, new Point(3, 4));
-		v.set(1, new Point(3, 4));
+		v.setSize(4);
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(1, 1));
+		v.set(2, new Point(2, 2));
+		v.set(3, new Point(3, 3));
 		try {
 			Triangle p = new Triangle(v);
 			p.perimeter();
@@ -51,7 +54,7 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();		
 	}
 	
-	protected TestResult testConstructorWithNullFileName() {
+	protected TestResult test14() {
 		
 		try {
 			String fileName = null;
@@ -65,10 +68,10 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();		
 	}
 		
-	protected TestResult testConstructorCannotFindFile() {
+	protected TestResult test15() {
 		
 		try {
-			String fileName = new String(filePath + "ololo.bin"); // file not exists 	
+			String fileName = new String(filePath + "a.bin"); // file not exists 	
 			Triangle p = new Triangle(fileName, 1);
 			p.perimeter();
 		}catch (OpenFileException e) {
@@ -79,13 +82,13 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();	
 	}
 	
-	protected TestResult testConstructorProtectedFile() {
+	protected TestResult test16() {
 		
 		try {
 			String fileName = new String(filePath + "protected.bin");
 			Triangle p = new Triangle(fileName, 1);
 			p.perimeter();
-		}catch (ReadFileException e) {
+		}catch (OpenFileException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
@@ -93,13 +96,13 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();	
 	}
 	
-	protected TestResult testConstructorWrongFormat() {
+	protected TestResult test17() {
 		
 		try {
 			String fileName = new String(filePath + "wrongFormat.bin");
 			Triangle p = new Triangle(fileName, 1);
 			p.perimeter();
-		}catch (ReadFileException e) {
+		}catch (FileFormatException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
@@ -107,7 +110,7 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();	
 	}
 	
-	protected TestResult testConstructorTriangleNotFound() {
+	protected TestResult test18() {
 		
 		try {
 			String fileName = new String(filePath + "noTriangleNumber7.bin");
@@ -121,70 +124,63 @@ public class TriangleTester extends PolygonTester {
 		return new TestFail();	
 	}
 	
-	protected TestResult testConstructorOkCreateFromFile() {
+	protected TestResult test19() {
+		
+		try {
+			String fileName = new String(filePath + "equal.bin");
+			Triangle p = new Triangle(fileName, 7);
+			p.perimeter();
+		}catch (EqualPointsException e) {
+			return new TestOk();
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();	
+	}
+	
+	protected TestResult test20() {
 		
 		try {
 			String fileName = new String(filePath + "twoSuitable.bin");
-			Triangle p = new Triangle(fileName, 2);
+			Triangle p = new Triangle(fileName, 7);
 			double sq = p.square();
-			if (Math.abs(sq - 2) < 0.0000001)
+			if (Math.abs(sq - 4) < CALC_DEVIATION)
 				return new TestOk();
 			else
 				return new TestFail();
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
 		}
+					
 	}
 	
-	protected TestResult testSquareThreePointInLine() {
+	protected TestResult test21() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(3);
 		v.set(0, new Point(0, 0));
-		v.set(1, new Point(0, 2));
-		v.set(2, new Point(0, 4));
+		v.set(1, new Point(0, 4));
+		v.set(2, new Point(0, 3));
 		try {
 			Triangle p = new Triangle(v);
-			if (p.square() < 0.0000001) 
-				return new TestOk();
-			
+			if (Math.abs(p.square()) < CALC_DEVIATION)
+				return new TestOk();			
 		} catch (PolygonException e) {
 			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
 		}
 		return new TestFail();		
 	}
 	
-	protected TestResult testSquareThreePointNotInLine() {
+	protected TestResult test22() {
 		
 		Vector<Point> v = new Vector<Point>();
 		v.setSize(3);
 		v.set(0, new Point(0, 0));
-		v.set(1, new Point(0, 2));
-		v.set(2, new Point(4, 0));
+		v.set(1, new Point(Double.MAX_VALUE - 1, 0));
+		v.set(2, new Point(0, Double.MAX_VALUE - 1));
 		try {
 			Triangle p = new Triangle(v);
-			if ( Math.abs(p.square() - 4) < 0.0000001) 
-				return new TestOk();
-			
-		} catch (PolygonException e) {
-			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
-		}
-		return new TestFail();		
-	}
-
-	protected TestResult testSquareOverflow() {
-		
-		Vector<Point> v = new Vector<Point>();
-		v.setSize(3);
-		v.set(0, new Point(Double.MAX_VALUE - 1, 0));
-		v.set(1, new Point(0, Double.MAX_VALUE - 1));
-		v.set(2, new Point(4, 0));
-		try {
-			Triangle p = new Triangle(v);
-			int buf = 1;
-			if ( Math.abs(p.square() - 4) < 0.0000001 && buf == 1) 
-				buf = 0;
-			
+			p.square();			
 		} catch (TypeOverflowException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
