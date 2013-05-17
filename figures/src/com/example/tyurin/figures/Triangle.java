@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Vector;
@@ -41,20 +40,25 @@ class TriangleLoader {
 			if (!file.exists())
 				throw new OpenFileException(fileName);
 			
-			InputStream input = null;
+			FileInputStream input = null;
 			try {
 				input = new FileInputStream(file);
 			} catch (FileNotFoundException e) {
 				throw new OpenFileException(fileName);
 			}
 			
-			int size = 8 + 6 * 8; // int + 6 * double				
-			byte[] arr = new byte[size];
+			int struct_size = 56;			
+			byte[] arr = new byte[struct_size];
 
+			if (input.available() % struct_size != 0) {
+				input.close();
+				throw new FileFormatException(fileName);
+			}
+			
 			int readed = 0;
-		    while ((readed = input.read(arr, 0, size)) == size)
+		    while ((readed = input.read(arr, 0, struct_size)) == struct_size)
 			{
-				ByteBuffer buf = ByteBuffer.allocate(size);  
+				ByteBuffer buf = ByteBuffer.allocate(struct_size);  
 			    buf.order(ByteOrder.LITTLE_ENDIAN);  
 			    buf.put(arr);
 			    
