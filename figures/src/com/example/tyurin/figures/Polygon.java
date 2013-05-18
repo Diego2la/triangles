@@ -95,6 +95,10 @@ public class Polygon {
 			return true;
 	}
 	
+	public AbstractCollection<Point> getPoints() {
+		return new Vector(vertices);
+	}
+	
 	/**
 	 * @return size of Polygon
 	 */

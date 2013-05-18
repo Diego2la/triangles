@@ -27,11 +27,11 @@ class TriangleLoader {
 			throw new NullArgumentException("fileName");
 		this.fileName = fileName;
 	}
-	
+		
 	public Triangle loadTriangle(int number) 
 			throws OpenFileException, FileFormatException, 
 			TriangleNotFoundException, EqualPointsException {
-		
+	
 		Triangle t = null;
 		
 		try {
@@ -47,7 +47,7 @@ class TriangleLoader {
 				throw new OpenFileException(fileName);
 			}
 			
-			int struct_size = 56;			
+			final int struct_size = 56;			
 			byte[] arr = new byte[struct_size];
 
 			if (input.available() % struct_size != 0) {

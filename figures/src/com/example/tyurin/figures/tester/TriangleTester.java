@@ -45,7 +45,6 @@ public class TriangleTester extends PolygonTester {
 		v.set(3, new Point(3, 3));
 		try {
 			Triangle p = new Triangle(v);
-			p.perimeter();
 		}catch (VerticesCountException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -59,7 +58,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = null;
 			Triangle p = new Triangle(fileName, 1);
-			p.perimeter();
 		}catch (NullArgumentException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -73,7 +71,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = new String(filePath + "a.bin"); // file not exists 	
 			Triangle p = new Triangle(fileName, 1);
-			p.perimeter();
 		}catch (OpenFileException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -87,7 +84,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = new String(filePath + "protected.bin");
 			Triangle p = new Triangle(fileName, 1);
-			p.perimeter();
 		}catch (OpenFileException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -101,7 +97,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = new String(filePath + "wrongFormat.bin");
 			Triangle p = new Triangle(fileName, 1);
-			p.perimeter();
 		}catch (FileFormatException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -115,7 +110,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = new String(filePath + "noTriangleNumber7.bin");
 			Triangle p = new Triangle(fileName, 7);
-			p.perimeter();
 		}catch (TriangleNotFoundException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -129,7 +123,6 @@ public class TriangleTester extends PolygonTester {
 		try {
 			String fileName = new String(filePath + "equal.bin");
 			Triangle p = new Triangle(fileName, 7);
-			p.perimeter();
 		}catch (EqualPointsException e) {
 			return new TestOk();
 		} catch (PolygonException e) {

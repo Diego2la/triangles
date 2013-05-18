@@ -1,5 +1,7 @@
 package com.example.tyurin.figures.tester;
 
+import java.util.AbstractCollection;
+import java.util.Iterator;
 import java.util.Vector;
 
 import com.example.tyurin.figures.Polygon;
@@ -23,6 +25,7 @@ public class PolygonTester extends Tester {
 		addTest( new TestInfo(test5(), "test5") );
 		addTest( new TestInfo(test6(), "test6") );
 		addTest( new TestInfo(test7(), "test7") );
+		addTest( new TestInfo(test7a(), "test7a") );
 		addTest( new TestInfo(test8(), "test8") );
 		addTest( new TestInfo(test9(), "test9") );
 		addTest( new TestInfo(test10(), "test10") );
@@ -40,7 +43,6 @@ public class PolygonTester extends Tester {
 		Vector<Point> v = null;
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		} catch (NullArgumentException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -59,7 +61,6 @@ public class PolygonTester extends Tester {
 		v.set(3, null);
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		}catch (NullArgumentException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -76,7 +77,6 @@ public class PolygonTester extends Tester {
 		v.set(1, new Point(3, 5));
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		}catch (VerticesCountException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -94,7 +94,6 @@ public class PolygonTester extends Tester {
 		v.set(2, new Point(Double.POSITIVE_INFINITY, 2));
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		}catch (BadPointException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -112,7 +111,6 @@ public class PolygonTester extends Tester {
 		v.set(2, new Point(2, Double.NaN));
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		}catch (BadPointException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -130,7 +128,6 @@ public class PolygonTester extends Tester {
 		v.set(2, new Point(1, 1));
 		try {
 			Polygon p = new Polygon(v);
-			p.perimeter();
 		}catch (EqualPointsException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -149,6 +146,49 @@ public class PolygonTester extends Tester {
 		v.set(3, new Point(3, 0));
 		try {
 			Polygon p = new Polygon(v);
+			int counter = 0;
+			AbstractCollection<Point> points = p.getPoints();
+			Iterator<Point> it = points.iterator();
+			Point pt = null;
+			if (it.hasNext()) 
+			{
+				pt = it.next();
+				if (pt.x == 0 && pt.y == 0) ++counter;
+			}
+			if (it.hasNext()) 
+			{
+				pt = it.next();
+				if (pt.x == 0 && pt.y == 4) ++counter;
+			}
+			if (it.hasNext()) 
+			{
+				pt = it.next();
+				if (pt.x == 3 && pt.y == 4) ++counter;
+			}
+			if (it.hasNext()) 
+			{
+				pt = it.next();
+				if (pt.x == 3 && pt.y == 0) ++counter;
+			}
+			if (!it.hasNext() && counter == 4)
+				return new TestOk();
+			
+		} catch (PolygonException e) {
+			return new TestFail("catching PolygonException(\"" + e.toString() + "\")");
+		}
+		return new TestFail();		
+	}
+	
+	protected TestResult test7a() {
+		
+		Vector<Point> v = new Vector<Point>();
+		v.setSize(4);
+		v.set(0, new Point(0, 0));
+		v.set(1, new Point(0, 4));
+		v.set(2, new Point(3, 4));
+		v.set(3, new Point(3, 0));
+		try {
+			Polygon p = new Polygon(v);
 			double perim = p.perimeter();
 			if (Math.abs(perim - 14) < CALC_DEVIATION) 
 				return new TestOk();
@@ -158,7 +198,7 @@ public class PolygonTester extends Tester {
 		}
 		return new TestFail();		
 	}
-	
+
 	protected TestResult test8() {
 		
 		Vector<Point> v = new Vector<Point>();
@@ -188,7 +228,6 @@ public class PolygonTester extends Tester {
 		try {
 			Polygon p = new Polygon(v);
 			double per = p.perimeter();			
-			if (per != 123) per += 1; // to exclude warning
 		} catch (TypeOverflowException e) {
 			return new TestOk();
 		} catch (PolygonException e) {
@@ -254,5 +293,5 @@ public class PolygonTester extends Tester {
 		return new TestFail();		
 	}
 	
-	protected final double CALC_DEVIATION = 0.000001;
+	protected final double CALC_DEVIATION = 0.00000000000001;
 }
